@@ -1,9 +1,88 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>tooltip Directive</title>
-</head>
-<body>
-Angular Frame Work
-</body>
-</html>
+		<html>
+		<head>
+			<title>tooltip Directive</title>
+	
+	
+			<script type="text/javascript" src ="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+		</head>
+		<style type="text/css">
+			#demoContainer span {
+		   background-color: #ddd;
+		   padding: 12px;
+		 }
+		 
+		 #demoContainer {
+		   margin: 100px;
+		   cursor: pointer;
+		   position: relative;
+		 }
+		 
+		 #divPopup {
+		   position: absolute;
+		   top: -26px;
+		   left: 83px;
+		 }
+		 
+		 #divPopup span {
+		   background-color: #B46D6D;
+		   padding: 12px;
+		   color: whitesmoke;
+		 }
+		 
+		 .floatLeft {
+		   float: left;
+		 }
+		 
+		 .margin3 {
+		   margin-top: 3px;
+		 }
+		</style>
+		<body>
+			<div ng-app="myApp" >
+				<div tooltip id="demoContainer">
+		    		hover me
+		  		</div>
+	
+			</div>
+		<script>
+			var app = angular.module('myApp', []);
+			app.directive('tooltip', function() {
+		    return {
+		        restrict : 'A',
+		        controller: function($scope, $element) {
+		            $scope.isShown = false;
+		            this.showHover = function() {
+		                $scope.isShown = $scope.isShown == true ? false : true;
+		            }
+		        },
+		        transclude : true,
+		     template: `<div ng-transclude></div>
+		        <div id="divPopup" ng-show="isShown">
+		        <div class="floatLeft">
+		        <div class="floatLeft margin3">
+		        <span>
+		        {{hoverText}}
+		        </span>
+		        </div>
+		        </div>`,
+		        link: function(scope,element,attr,ctrl){
+		    		scope.hoverText=element[0].childNodes[0].innerText;
+		    		const showTip=function() {
+		        		scope.$apply(function() {
+		            	ctrl.showHover();
+		            });
+		        	};
+	
+		    		element.bind('mouseover', showTip);
+		        	scope.$on('$destroy',function(){
+		        		element.unbind('mouseover',showTip);
+		        	});
+				
+		        
+		    }
+		}
+		});
+		</script>
+		</body>
+		</html>
